@@ -3,44 +3,60 @@ package dev.thunderbolt.dogbreeds
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import dev.thunderbolt.dogbreeds.ui.theme.DogBreedsTheme
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.remember
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import dagger.hilt.android.AndroidEntryPoint
+import dev.thunderbolt.dogbreeds.presentation.breed.detail.BreedDetailScreen
+import dev.thunderbolt.dogbreeds.presentation.breed.favorites.BreedFavoritesScreen
+import dev.thunderbolt.dogbreeds.presentation.breed.list.BreedListScreen
+import dev.thunderbolt.dogbreeds.presentation.theme.DogBreedsTheme
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             DogBreedsTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                val navController = rememberNavController()
+                val snackbarHostState = remember { SnackbarHostState() }
+
+                NavHost(
+                    navController = navController,
+                    startDestination = "breed-list",
                 ) {
-                    Greeting("Android")
+                    composable(route = "breed-list") {
+                        BreedListScreen(
+                            navigateToDetail = { name ->
+                                navController.navigate("breed/$name")
+                            },
+                            navigateToFavorites = {
+                                navController.navigate("breed-favorites")
+                            },
+                            snackbarHostState = snackbarHostState,
+                        )
+                    }
+                    composable(
+                        route = "breed/{name}",
+                        arguments = listOf(navArgument("name") { type = NavType.StringType }),
+                    ) {
+                        BreedDetailScreen(
+                            snackbarHostState = snackbarHostState,
+                            navigateBack = { navController.navigateUp() },
+                        )
+                    }
+                    composable(route = "breed-favorites") {
+                        BreedFavoritesScreen(
+                            snackbarHostState = snackbarHostState,
+                            navigateBack = { navController.navigateUp() },
+                        )
+                    }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    DogBreedsTheme {
-        Greeting("Android")
     }
 }

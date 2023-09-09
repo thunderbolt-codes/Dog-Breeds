@@ -1,4 +1,4 @@
-package dev.thunderbolt.dogbreeds.ui.theme
+package dev.thunderbolt.dogbreeds.presentation.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

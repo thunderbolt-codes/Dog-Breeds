@@ -1,1 +1,5 @@
-# Dog-Breeds
+# Dog Breeds
+
+This Android project:
+
+...
