@@ -14,11 +14,11 @@ import dev.thunderbolt.dogbreeds.domain.entity.DogBreed
 @Composable
 fun BreedItemView(
     dogBreed: DogBreed,
-    onClick: () -> Unit = {},
+    onClicked: () -> Unit = {},
 ) {
     Box(
         modifier = Modifier
-            .clickable { onClick() }
+            .clickable { onClicked() }
             .fillMaxWidth()
             .padding(horizontal = 20.dp, vertical = 12.dp),
     ) {

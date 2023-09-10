@@ -23,7 +23,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             DogBreedsTheme {
                 val navController = rememberNavController()
-                val snackbarHostState = remember { SnackbarHostState() }
 
                 NavHost(
                     navController = navController,
@@ -31,27 +30,24 @@ class MainActivity : ComponentActivity() {
                 ) {
                     composable(route = "breed-list") {
                         BreedListScreen(
-                            navigateToDetail = { name ->
-                                navController.navigate("breed/$name")
+                            navigateToDetail = { breed ->
+                                navController.navigate("breed/$breed")
                             },
                             navigateToFavorites = {
                                 navController.navigate("breed-favorites")
                             },
-                            snackbarHostState = snackbarHostState,
                         )
                     }
                     composable(
-                        route = "breed/{name}",
-                        arguments = listOf(navArgument("name") { type = NavType.StringType }),
+                        route = "breed/{breed}",
+                        arguments = listOf(navArgument("breed") { type = NavType.StringType }),
                     ) {
                         BreedDetailScreen(
-                            snackbarHostState = snackbarHostState,
                             navigateBack = { navController.navigateUp() },
                         )
                     }
                     composable(route = "breed-favorites") {
                         BreedFavoritesScreen(
-                            snackbarHostState = snackbarHostState,
                             navigateBack = { navController.navigateUp() },
                         )
                     }

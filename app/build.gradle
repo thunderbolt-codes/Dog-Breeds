@@ -86,6 +86,7 @@ dependencies {
     // RETROFIT
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.11.0"
 
     // ROOM
     implementation "androidx.room:room-ktx:$room_version"

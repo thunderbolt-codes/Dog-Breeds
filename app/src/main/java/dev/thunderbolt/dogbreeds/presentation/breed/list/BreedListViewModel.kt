@@ -16,11 +16,10 @@ class BreedListViewModel @Inject constructor(
     private val getBreedList: GetBreedList,
 ) : ViewModel() {
 
-    val breedListFlow: StateFlow<UIState<List<DogBreed>>> = getBreedList()
+    val breedList: StateFlow<UIState<List<DogBreed>>> = getBreedList()
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(),
             UIState.Loading(),
         )
-
 }

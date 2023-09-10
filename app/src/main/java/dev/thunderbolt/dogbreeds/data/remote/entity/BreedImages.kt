@@ -2,7 +2,7 @@ package dev.thunderbolt.dogbreeds.data.remote.entity
 
 import com.google.gson.annotations.SerializedName
 
-data class BreedList(
+data class BreedImages(
     @SerializedName("message")
-    val breedsAndSubBreeds: Map<String, List<String>>,
+    val imageUrls: List<String>,
 )

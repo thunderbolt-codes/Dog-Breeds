@@ -11,12 +11,14 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -31,19 +33,12 @@ import dev.thunderbolt.dogbreeds.domain.entity.UIState
 fun BreedListScreen(
     navigateToDetail: (String) -> Unit,
     navigateToFavorites: () -> Unit,
-    snackbarHostState: SnackbarHostState,
 ) {
     val viewModel = hiltViewModel<BreedListViewModel>()
-    val uiState by viewModel.breedListFlow.collectAsStateWithLifecycle()
-
-    if (uiState is UIState.Error) {
-        LaunchedEffect(key1 = snackbarHostState) {
-            snackbarHostState.showSnackbar((uiState as UIState.Error).error)
-        }
-    }
+    val breedList by viewModel.breedList.collectAsStateWithLifecycle()
 
     BreedListContent(
-        uiState = uiState,
+        breedList = breedList,
         navigateToDetail = navigateToDetail,
         navigateToFavorites = navigateToFavorites,
     )
@@ -52,11 +47,20 @@ fun BreedListScreen(
 
 @Composable
 fun BreedListContent(
-    uiState: UIState<List<DogBreed>>,
+    breedList: UIState<List<DogBreed>>,
     navigateToDetail: (String) -> Unit = {},
     navigateToFavorites: () -> Unit = {},
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    if (breedList is UIState.Error) {
+        LaunchedEffect(key1 = snackbarHostState) {
+            snackbarHostState.showSnackbar(breedList.error)
+        }
+    }
+
     Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = {
@@ -65,7 +69,7 @@ fun BreedListContent(
                 actions = {
                     IconButton(onClick = { navigateToFavorites() }) {
                         Icon(
-                            imageVector = Icons.Filled.Favorite,
+                            imageVector = Icons.Default.Favorite,
                             contentDescription = stringResource(R.string.favorites),
                         )
                     }
@@ -78,9 +82,9 @@ fun BreedListContent(
                     .padding(padding)
                     .fillMaxSize(),
             ) {
-                when (uiState) {
+                when (breedList) {
                     is UIState.Success -> {
-                        val breeds = uiState.data
+                        val breeds = breedList.data
                         LazyColumn(
                             modifier = Modifier.fillMaxSize(),
                         ) {
@@ -91,7 +95,7 @@ fun BreedListContent(
                                     val dogBreed = breeds[index]
                                     BreedItemView(
                                         dogBreed = dogBreed,
-                                        onClick = { navigateToDetail(dogBreed.name) },
+                                        onClicked = { navigateToDetail(dogBreed.name) },
                                     )
                                     Divider()
                                 }
@@ -112,7 +116,7 @@ fun BreedListContent(
 @Composable
 fun BreedListPreview() {
     BreedListContent(
-        uiState = UIState.Success(
+        breedList = UIState.Success(
             listOf(
                 DogBreed("Poodle"),
                 DogBreed("Labrador"),

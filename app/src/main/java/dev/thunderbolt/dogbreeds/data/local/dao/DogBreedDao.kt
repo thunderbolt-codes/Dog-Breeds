@@ -11,6 +11,9 @@ interface DogBreedDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(items: List<DogBreedEntity>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(item: DogBreedEntity)
+
     @Query("SELECT * FROM dog_breed")
     suspend fun getAll(): List<DogBreedEntity>
 

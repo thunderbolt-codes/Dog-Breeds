@@ -8,11 +8,13 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,11 +26,9 @@ import dev.thunderbolt.dogbreeds.presentation.breed.detail.BreedDetailViewModel
 
 @Composable
 fun BreedFavoritesScreen(
-    snackbarHostState: SnackbarHostState,
     navigateBack: () -> Unit,
 ) {
-    val viewModel = hiltViewModel<BreedDetailViewModel>()
-    val name by viewModel.name.collectAsStateWithLifecycle()
+    val viewModel = hiltViewModel<BreedFavoritesViewModel>()
 
     BreedFavoritesContent(
         navigateBack = navigateBack,
@@ -39,7 +39,10 @@ fun BreedFavoritesScreen(
 fun BreedFavoritesContent(
     navigateBack: () -> Unit = {},
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
+
     Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = {
