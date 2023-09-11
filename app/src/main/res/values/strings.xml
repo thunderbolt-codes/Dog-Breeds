@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Dog Breeds</string>
+
+    <string name="common_no_image_message">No image found!</string>
+
     <string name="favorites">Favorites</string>
 </resources>

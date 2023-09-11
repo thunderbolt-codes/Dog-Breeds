@@ -1,4 +1,4 @@
-package dev.thunderbolt.dogbreeds.presentation.breed.detail
+package dev.thunderbolt.dogbreeds.presentation.breed.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -45,7 +45,7 @@ fun BreedImageView(
                 .error(R.drawable.ic_placeholder_dog)
                 .crossfade(true)
                 .build(),
-            contentDescription = "Dog Image",
+            contentDescription = image.breed,
             contentScale = ContentScale.Crop,
         )
         IconButton(
@@ -71,6 +71,7 @@ fun BreedImagePreview() {
         image = DogImage(
             url = "url",
             isFavorite = false,
-        ),
+            breed = "Pug",
+        )
     )
 }

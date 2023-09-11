@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.thunderbolt.dogbreeds.domain.entity.DogImage
-import dev.thunderbolt.dogbreeds.domain.entity.UIState
+import dev.thunderbolt.dogbreeds.domain.entity.Response
 import dev.thunderbolt.dogbreeds.domain.usecase.GetBreedImages
 import dev.thunderbolt.dogbreeds.domain.usecase.ToggleImageFavorite
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,8 +23,8 @@ class BreedDetailViewModel @Inject constructor(
 
     val breed: StateFlow<String> = savedStateHandle.getStateFlow("breed", "")
 
-    private val _breedImages = MutableStateFlow<UIState<List<DogImage>>>(UIState.Loading())
-    val breedImages: StateFlow<UIState<List<DogImage>>> = _breedImages.asStateFlow()
+    private val _breedImages = MutableStateFlow<Response<List<DogImage>>>(Response.Loading())
+    val breedImages: StateFlow<Response<List<DogImage>>> = _breedImages.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -34,11 +34,11 @@ class BreedDetailViewModel @Inject constructor(
         }
     }
 
-    fun toggleImageFavorite(image: DogImage) {
+    fun toggleFavorite(image: DogImage) {
         viewModelScope.launch {
-            toggleImageFavorite(breed.value, image).collect { updatedImage ->
+            toggleImageFavorite(image).collect { updatedImage ->
                 val images = _breedImages.value.data.orEmpty()
-                _breedImages.value = UIState.Success(
+                _breedImages.value = Response.Success(
                     images.map { if (it.url == image.url) updatedImage else it }
                 )
             }

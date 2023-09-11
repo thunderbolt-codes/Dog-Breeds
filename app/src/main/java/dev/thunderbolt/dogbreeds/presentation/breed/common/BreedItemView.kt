@@ -1,4 +1,4 @@
-package dev.thunderbolt.dogbreeds.presentation.breed.list
+package dev.thunderbolt.dogbreeds.presentation.breed.common
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box

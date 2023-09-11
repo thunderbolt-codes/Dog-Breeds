@@ -3,12 +3,9 @@ package dev.thunderbolt.dogbreeds.presentation.breed.detail
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -26,7 +23,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.thunderbolt.dogbreeds.domain.entity.DogImage
-import dev.thunderbolt.dogbreeds.domain.entity.UIState
+import dev.thunderbolt.dogbreeds.domain.entity.Response
+import dev.thunderbolt.dogbreeds.presentation.breed.common.BreedImageGridView
 
 @Composable
 fun BreedDetailScreen(
@@ -40,20 +38,20 @@ fun BreedDetailScreen(
         breed = breed,
         breedImages = breedImages,
         navigateBack = navigateBack,
-        onFavoriteClicked = viewModel::toggleImageFavorite,
+        onFavoriteClicked = viewModel::toggleFavorite,
     )
 }
 
 @Composable
 fun BreedDetailContent(
     breed: String,
-    breedImages: UIState<List<DogImage>>,
+    breedImages: Response<List<DogImage>>,
     navigateBack: () -> Unit = {},
     onFavoriteClicked: (DogImage) -> Unit = {},
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
-    if (breedImages is UIState.Error) {
+    if (breedImages is Response.Error) {
         LaunchedEffect(key1 = snackbarHostState) {
             snackbarHostState.showSnackbar(breedImages.error)
         }
@@ -83,31 +81,12 @@ fun BreedDetailContent(
                     .fillMaxSize(),
             ) {
                 when (breedImages) {
-                    is UIState.Success -> {
-                        val images = breedImages.data
-                        LazyVerticalGrid(
-                            modifier = Modifier.fillMaxSize(),
-                            columns = GridCells.Fixed(2),
-                        ) {
-                            items(
-                                count = images.size,
-                                key = { index -> images[index].url },
-                                itemContent = { index ->
-                                    val image = images[index]
-                                    BreedImageView(
-                                        image = image,
-                                        onFavoriteClicked = {
-                                            onFavoriteClicked(image)
-                                        }
-                                    )
-                                }
-                            )
-                        }
-                    }
+                    is Response.Success -> BreedImageGridView(
+                        images = breedImages.data,
+                        onFavoriteClicked = onFavoriteClicked,
+                    )
 
-                    else -> {
-                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                    }
+                    else -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
             }
         }
@@ -119,19 +98,22 @@ fun BreedDetailContent(
 fun BreedDetailPreview() {
     BreedDetailContent(
         breed = "Poodle",
-        breedImages = UIState.Success(
+        breedImages = Response.Success(
             listOf(
                 DogImage(
-                    url = "url",
+                    url = "url1",
                     isFavorite = false,
+                    breed = "Poodle",
                 ),
                 DogImage(
-                    url = "url",
+                    url = "url2",
                     isFavorite = true,
+                    breed = "Poodle",
                 ),
                 DogImage(
-                    url = "url",
+                    url = "url3",
                     isFavorite = false,
+                    breed = "Poodle",
                 ),
             )
         ),

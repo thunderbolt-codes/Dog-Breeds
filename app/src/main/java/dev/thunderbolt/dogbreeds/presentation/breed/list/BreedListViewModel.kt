@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.thunderbolt.dogbreeds.domain.entity.DogBreed
-import dev.thunderbolt.dogbreeds.domain.entity.UIState
+import dev.thunderbolt.dogbreeds.domain.entity.Response
 import dev.thunderbolt.dogbreeds.domain.usecase.GetBreedList
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -16,10 +16,10 @@ class BreedListViewModel @Inject constructor(
     private val getBreedList: GetBreedList,
 ) : ViewModel() {
 
-    val breedList: StateFlow<UIState<List<DogBreed>>> = getBreedList()
+    val breedList: StateFlow<Response<List<DogBreed>>> = getBreedList()
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(),
-            UIState.Loading(),
+            Response.Loading(),
         )
 }

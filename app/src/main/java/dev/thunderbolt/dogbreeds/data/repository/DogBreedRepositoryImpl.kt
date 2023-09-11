@@ -51,7 +51,8 @@ class DogBreedRepositoryImpl @Inject constructor(
                 emit(remoteData.map {
                     DogImage(
                         url = it,
-                        isFavorite = breedFavorites.contains(it)
+                        isFavorite = breedFavorites.contains(it),
+                        breed = breed,
                     )
                 })
             }
@@ -62,18 +63,29 @@ class DogBreedRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
-    override fun toggleImageFavorite(breed: String, image: DogImage): Flow<Boolean> = flow {
+    override fun toggleImageFavorite(image: DogImage): Flow<Boolean> = flow {
         if (image.isFavorite) {
             db.favoriteImageDao.deleteByUrl(image.url)
             emit(false)
         } else {
             db.favoriteImageDao.insert(
                 FavoriteImageEntity(
-                    breed = breed,
+                    breed = image.breed,
                     url = image.url,
                 )
             )
             emit(true)
         }
+    }.flowOn(Dispatchers.IO)
+
+    override fun getAllFavoriteImages(): Flow<List<DogImage>> = flow {
+        val favorites = db.favoriteImageDao.getAll()
+        emit(favorites.map {
+            DogImage(
+                url = it.url,
+                isFavorite = true,
+                breed = it.breed,
+            )
+        })
     }.flowOn(Dispatchers.IO)
 }

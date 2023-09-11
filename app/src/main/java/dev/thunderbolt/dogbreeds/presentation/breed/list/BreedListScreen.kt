@@ -27,7 +27,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.thunderbolt.dogbreeds.R
 import dev.thunderbolt.dogbreeds.domain.entity.DogBreed
-import dev.thunderbolt.dogbreeds.domain.entity.UIState
+import dev.thunderbolt.dogbreeds.domain.entity.Response
+import dev.thunderbolt.dogbreeds.presentation.breed.common.BreedItemView
 
 @Composable
 fun BreedListScreen(
@@ -47,13 +48,13 @@ fun BreedListScreen(
 
 @Composable
 fun BreedListContent(
-    breedList: UIState<List<DogBreed>>,
+    breedList: Response<List<DogBreed>>,
     navigateToDetail: (String) -> Unit = {},
     navigateToFavorites: () -> Unit = {},
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
-    if (breedList is UIState.Error) {
+    if (breedList is Response.Error) {
         LaunchedEffect(key1 = snackbarHostState) {
             snackbarHostState.showSnackbar(breedList.error)
         }
@@ -83,7 +84,7 @@ fun BreedListContent(
                     .fillMaxSize(),
             ) {
                 when (breedList) {
-                    is UIState.Success -> {
+                    is Response.Success -> {
                         val breeds = breedList.data
                         LazyColumn(
                             modifier = Modifier.fillMaxSize(),
@@ -91,15 +92,14 @@ fun BreedListContent(
                             items(
                                 count = breeds.size,
                                 key = { index -> breeds[index].name },
-                                itemContent = { index ->
-                                    val dogBreed = breeds[index]
-                                    BreedItemView(
-                                        dogBreed = dogBreed,
-                                        onClicked = { navigateToDetail(dogBreed.name) },
-                                    )
-                                    Divider()
-                                }
-                            )
+                            ) { index ->
+                                val dogBreed = breeds[index]
+                                BreedItemView(
+                                    dogBreed = dogBreed,
+                                    onClicked = { navigateToDetail(dogBreed.name) },
+                                )
+                                Divider()
+                            }
                         }
                     }
 
@@ -116,7 +116,7 @@ fun BreedListContent(
 @Composable
 fun BreedListPreview() {
     BreedListContent(
-        breedList = UIState.Success(
+        breedList = Response.Success(
             listOf(
                 DogBreed("Poodle"),
                 DogBreed("Labrador"),

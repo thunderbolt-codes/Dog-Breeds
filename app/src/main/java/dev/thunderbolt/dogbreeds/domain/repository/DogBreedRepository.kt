@@ -7,5 +7,6 @@ import kotlinx.coroutines.flow.Flow
 interface DogBreedRepository {
     fun getBreedList(): Flow<List<DogBreed>>
     fun getBreedImages(breed: String): Flow<List<DogImage>>
-    fun toggleImageFavorite(breed: String, image: DogImage): Flow<Boolean>
+    fun toggleImageFavorite(image: DogImage): Flow<Boolean>
+    fun getAllFavoriteImages(): Flow<List<DogImage>>
 }
