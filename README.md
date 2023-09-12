@@ -16,5 +16,6 @@ libraries:
 - Coil
 - Retrofit
 - Room
+- JUnit
 - Turbine
 - MockK

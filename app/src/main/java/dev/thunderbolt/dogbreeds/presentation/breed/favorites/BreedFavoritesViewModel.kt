@@ -1,5 +1,6 @@
 package dev.thunderbolt.dogbreeds.presentation.breed.favorites
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -58,5 +59,15 @@ class BreedFavoritesViewModel @Inject constructor(
         _selectedBreeds.value = _selectedBreeds.value.let {
             if (it.contains(breed)) it.minus(breed) else it.plus(breed)
         }
+    }
+
+    @VisibleForTesting
+    fun setFavoriteImages(images: List<DogImage>) {
+        _favoriteImages.value = Response.Success(images)
+    }
+
+    @VisibleForTesting
+    fun setSelectedBreeds(breeds: List<String>) {
+        _selectedBreeds.value = breeds
     }
 }

@@ -1,5 +1,6 @@
 package dev.thunderbolt.dogbreeds.presentation.breed.detail
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -43,5 +44,10 @@ class BreedDetailViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    @VisibleForTesting
+    fun setBreedImages(images: List<DogImage>) {
+        _breedImages.value = Response.Success(images)
     }
 }
